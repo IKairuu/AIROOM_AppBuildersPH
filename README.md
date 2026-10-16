@@ -63,7 +63,7 @@ AIROOM turns one computer (a laptop or a desktop) into a private AI that everyon
 
 It is **simple on the surface**: out of the box it is a general assistant for anyone in the room. It goes **deeper when it matters**: a host can turn the room into a *Room* with its own files and rules, it stays fair and private when the room is full, and in an emergency it puts safety first.
 
-Built solo during the **AppBuildersPH Hackathon 2026** (theme: *Local AI*).
+Built by **Team LUXUS** during the **AppBuildersPH Hackathon 2026** (theme: *Local AI*).
 
 ---
 
@@ -328,15 +328,19 @@ Full list in [DISCLOSURE.md](DISCLOSURE.md).
 - **Libraries:** `ollama`, `unpdf`, `mammoth`, `qrcode`, `adm-zip`, `systeminformation`, `p-queue`.
 - **APIs / cloud services:** none at runtime. The internet is used only to install dependencies and download models.
 - **Existing code and assets:** none from before the hackathon. Fonts are Inter Tight and JetBrains Mono (SIL Open Font License, via Fontsource).
-- **AI development tools:** parts of the code, documentation and this README were written with help from Claude (Anthropic) through Claude Code. The builder reviewed and is responsible for everything that ships.
+- **AI development tools:** parts of the code, documentation and this README were written with help from Claude (Anthropic) through Claude Code. The team reviewed and is responsible for everything that ships.
 
 ---
 
 ## Team
 
+**Team LUXUS**
+
 | Name | Role |
 | --- | --- |
-| **Jhon Lloyd Valencia** | Solo builder: product, design, engineering |
+| **Jhon Lloyd Valencia** | Product manager and design |
+| **Kyle Allen Abandia** | AI development and backend |
+| **Franck Maurenzio Altamarino** | Design, testing and frontend |
 
 ---
 
