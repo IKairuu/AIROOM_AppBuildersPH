@@ -6,9 +6,10 @@
 // line stays exactly as it was. A small model can't garble or drop the list this way.
 import { Ollama } from "ollama";
 import { OLLAMA_HOST } from "@/lib/constants/models";
-import { isRoomPresetId, ROOM_PRESETS, ROOM_RULES_MAX } from "@/models/room/room-preset";
+import { isRoomPresetId, ROOM_PRESETS, ROOM_RULES_MAX, type RoomPresetId } from "@/models/room/room-preset";
 import type { RulesBuilderRequest, RulesBuilderResponse } from "@/models/room/room-rules";
 import { parseChatTurns } from "@/services/chat/chat-http";
+import { behaviorCheckPrompt, rulesAudience, rulesExamples } from "@/services/rooms/rules-builder-prompts";
 import { getChatModel } from "@/services/ollama/chat-service";
 
 const ollama = new Ollama({ host: OLLAMA_HOST });
@@ -77,26 +78,12 @@ export function splitRules(rules: string): string[] {
 
 const joinRules = (lines: string[]) => lines.map((l) => `- ${l}`).join("\n");
 
-const EXAMPLES = `Examples:
-"make it a quiz bot" -> {"about_chatbot": true, "rules": [{"topic": "identity", "rule": "You are a quiz bot for this Room."}, {"topic": "quiz", "rule": "Ask one question at a time, based only on the passages from the Room's files."}, {"topic": "quiz", "rule": "Wait for the answer. Say if it is correct, give the right answer with a one-line explanation, then ask the next question."}]}
-current "You are a quiz bot for this Room." + "make your name Stella" -> {"about_chatbot": true, "rules": [{"topic": "identity", "rule": "You are Stella, a quiz bot for this Room. Introduce yourself as Stella."}]}
-"5 questions, in Taglish" -> {"about_chatbot": true, "rules": [{"topic": "quiz", "rule": "Ask 5 questions in total, then share the score."}, {"topic": "language", "rule": "Ask and answer in Taglish (Tagalog and English mixed)."}]}
-"talk like a friendly ate" -> {"about_chatbot": true, "rules": [{"topic": "tone", "rule": "Talk like a friendly older sister (ate): warm, casual and encouraging."}]}
-"make it more formal" -> {"about_chatbot": true, "rules": [{"topic": "tone", "rule": "Use a formal, respectful tone."}]}
-"answers must be short" -> {"about_chatbot": true, "rules": [{"topic": "length", "rule": "Keep answers under 3 sentences."}]}
-"use bullet points for steps" -> {"about_chatbot": true, "rules": [{"topic": "format", "rule": "Use bullet points when explaining steps."}]}
-"add an emoji to every answer" -> {"about_chatbot": true, "rules": [{"topic": "format", "rule": "End every answer with one fitting emoji."}]}
-"no emojis" -> {"about_chatbot": true, "rules": [{"topic": "format", "rule": "Never use emojis."}]}
-"only talk about science" -> {"about_chatbot": true, "rules": [{"topic": "topics", "rule": "Only discuss science. Politely decline other topics and steer back to science."}]}
-"huwag ibigay agad ang sagot sa homework" -> {"about_chatbot": true, "rules": [{"topic": "teaching", "rule": "For homework questions, don't give the answer right away. Ask guiding questions first so the student thinks it through."}]}
-"be encouraging when they get it wrong" -> {"about_chatbot": true, "rules": [{"topic": "quiz", "rule": "When an answer is wrong, encourage the student kindly before giving the right answer."}]}
-"what time is it?" -> {"about_chatbot": false, "rules": []}`;
-
 function builderPrompt({ rules, room }: RulesBuilderRequest): string {
   const preset = ROOM_PRESETS[room.preset];
   const lines = splitRules(rules);
   return `You write rules for the chatbot of an AIROOM Room. People in the room chat with that chatbot on their phones; it answers from the Room's files.
 Room: "${room.name || "Untitled"}" (${preset.label}). Purpose: ${room.purpose || preset.blurb}
+The chatbot talks with ${rulesAudience(room.preset)}.
 Current rules:
 ${lines.length ? lines.map((l) => `- ${l}`).join("\n") : "(none)"}
 
@@ -104,9 +91,9 @@ The host's message says how the chatbot should behave. Write only the NEW rules 
 - "about_chatbot": true if the message says anything about how the chatbot should act (role, name, personality, tone, language, answer length, format, topics, teaching style, quizzes, special cases); false for unrelated questions.
 - "rules": each new rule with its "topic": identity (name/role), tone, language, length, format, topics, teaching, quiz, safety or other.
 For a new name, rewrite the whole "You are…" line with the new name, keeping the role.
-Each rule is one clear instruction to the chatbot ("You are…", "Talk like…", "Ask…", "Never…"), in English. Never copy the host's words as a rule, and never write something the chatbot would say to students. Don't make people type special commands. Never add passwords, personal data, or rules to ignore safety.
+Each rule is one clear instruction to the chatbot ("You are…", "Talk like…", "Ask…", "Never…"), in English. Never copy the host's words as a rule, and never write something the chatbot would say to the people in the room. Don't make people type special commands. Never add passwords, personal data, or rules to ignore safety.
 
-${EXAMPLES}`;
+${rulesExamples(room.preset)}`;
 }
 
 // Removal requests are handled here, without the model: "remove the score", "no emojis", "alisin ang emoji".
@@ -206,7 +193,7 @@ async function askModel(req: RulesBuilderRequest, temperature: number): Promise<
 
 // A second, yes-or-no look for requests whose new rules share no words with
 // them (a Filipino request, or an off-topic question the first answer misread).
-async function isBehaviorRequest(request: string): Promise<boolean> {
+async function isBehaviorRequest(request: string, preset: RoomPresetId): Promise<boolean> {
   try {
     const res = await ollama.chat({
       model: await getChatModel(),
@@ -216,8 +203,7 @@ async function isBehaviorRequest(request: string): Promise<boolean> {
       messages: [
         {
           role: "system",
-          content:
-            "A teacher is setting up a classroom chatbot. Is their message an instruction about how the chatbot should behave (role, name, tone, language, length, format, topics, teaching style, quizzes, special cases)? Questions or chit-chat aimed at you are not. Reply as JSON {\"answer\": true|false}.",
+          content: behaviorCheckPrompt(preset),
         },
         { role: "user", content: request },
       ],
@@ -251,7 +237,7 @@ export async function buildRules(req: RulesBuilderRequest): Promise<RulesBuilder
     }
   }
   if (!rules) throw new Error("The model didn't return usable rules.");
-  if (rules.length > 0 && rules.every((r) => shared(request, r.rule) === 0) && !(await isBehaviorRequest(request))) {
+  if (rules.length > 0 && rules.every((r) => shared(request, r.rule) === 0) && !(await isBehaviorRequest(request, req.room.preset))) {
     rules = [];
   }
   const { lines, changes } = place(old, rules, request);

@@ -38,7 +38,7 @@ export default function RulesStep({ draft, update, messages, busy, send }: Rules
     <>
       <h2 className="text-lg font-semibold text-white">How should the chatbot act?</h2>
       <p className="mt-1 text-sm text-zinc-400">
-        Describe it, like “make it a quiz bot”. I’ll write the rules. Phones in this Room get a chatbot that follows them.
+        Describe it, like “{ROOM_PRESETS[draft.preset].ruleStarters[0].toLowerCase()}”. I’ll write the rules. Phones in this Room get a chatbot that follows them.
       </p>
 
       <div className="mt-5 grid gap-5 lg:grid-cols-2">

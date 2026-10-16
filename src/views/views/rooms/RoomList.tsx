@@ -11,7 +11,7 @@ import PageTitle from "@/views/widgets/common/PageTitle";
 import PresetIcon from "@/views/widgets/common/PresetIcon";
 import RoomCard, { type RoomCardData } from "./RoomCard";
 
-const START_TYPES: RoomPresetId[] = ["class", "barangay", "emergency", "office"];
+const START_TYPES: RoomPresetId[] = ["general", "class", "barangay", "emergency", "office"];
 
 // Short tags from a Room's rules, shown on its card.
 function ruleTags(room: Room): string[] {
@@ -51,7 +51,7 @@ export default async function RoomList() {
       </div>
 
       <h2 className="mt-8 font-mono text-[11px] tracking-[0.2em] text-zinc-500 uppercase">Start from a type</h2>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {START_TYPES.map((id) => (
           <Link
             key={id}

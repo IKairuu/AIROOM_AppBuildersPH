@@ -16,13 +16,13 @@ export const ROOM_PRESETS: Record<RoomPresetId, RoomPreset> = {
   general: {
     id: "general",
     label: "General",
-    blurb: "An everyday offline assistant for anyone in the room. No setup needed.",
+    blurb: "An all-purpose offline assistant anyone in the room can ask about anything.",
     nameHint: "Open Room",
     ruleStarters: [
-      "Be a friendly helper for anyone in the room",
+      "Be a helper for anything: questions, writing, planning, ideas",
+      "Help people write letters, messages and resumes",
+      "Explain things simply, like I'm 12",
       "Always answer in Taglish",
-      "Keep answers short, 3 sentences max",
-      "Use bullet points when explaining steps",
     ],
   },
   class: {
