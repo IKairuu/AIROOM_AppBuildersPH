@@ -1,0 +1,11 @@
+{
+  "app": {
+    "[project]/src/app/host/page": [],
+    "[project]/src/app/host/queue/page": [],
+    "[project]/src/app/host/rooms/page": [],
+    "[project]/src/app/page": []
+  },
+  "appUsingSizeAdjust": false,
+  "pages": {},
+  "pagesUsingSizeAdjust": false
+}

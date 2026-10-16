@@ -1,0 +1,11 @@
+{
+  "/api/launch/checks/[id]/route": "app/api/launch/checks/[id]/route.js",
+  "/api/ping/route": "app/api/ping/route.js",
+  "/api/queue/route": "app/api/queue/route.js",
+  "/api/settings/route": "app/api/settings/route.js",
+  "/api/system/status/route": "app/api/system/status/route.js",
+  "/host/page": "app/host/page.js",
+  "/host/queue/page": "app/host/queue/page.js",
+  "/host/rooms/page": "app/host/rooms/page.js",
+  "/page": "app/page.js"
+}
