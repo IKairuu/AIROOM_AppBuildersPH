@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 76, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Kyle%20Allen%20Abandia/Vscode/Projects/AIROOM/AIROOM_AppBuildersPH/src/app/api/ping/route.ts"],"sourcesContent":["import { connection } from \"next/server\";\r\n\r\n// A tiny \"is the server reachable here?\" answer, used by the Launch server check.\r\nexport async function GET() {\r\n  await connection();\r\n  return Response.json({ ok: true }, { headers: { \"Cache-Control\": \"no-store\" } });\r\n}\r\n"],"names":["GET","Response","json","ok","headers"],"mappings":";;;;AAAA;;AAGO,eAAeA;IACpB,MAAM,IAAA,8IAAU;IAChB,OAAOC,SAASC,IAAI,CAAC;QAAEC,IAAI;IAAK,GAAG;QAAEC,SAAS;YAAE,iBAAiB;QAAW;IAAE;AAChF"}}]
-}
