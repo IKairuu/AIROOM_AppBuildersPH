@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "172.*.*.*"],
   // systeminformation shells out to OS tools (powershell, wmic); bundling it breaks the build.
   serverExternalPackages: ["systeminformation"],
+  // The hosted demo seeds its temp data folder from /data, so ship it with the server.
+  outputFileTracingIncludes: {
+    "/*": ["./data/**/*"],
+  },
   turbopack: {
     rules: {
       "*.css": {

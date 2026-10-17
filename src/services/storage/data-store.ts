@@ -1,9 +1,22 @@
 // Server-only: AIROOM keeps everything as files under /data on the host laptop.
 import { randomUUID } from "node:crypto";
+import { cpSync, existsSync } from "node:fs";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
+import { DEMO_MODE } from "@/lib/constants/features";
 
-export const DATA_DIR = path.join(process.cwd(), "data");
+const BUNDLED_DATA_DIR = path.join(process.cwd(), "data");
+
+// The hosted demo can't write to its own folder, so it works on a copy in the
+// temp folder, seeded with the sample Rooms. That copy resets when the server does.
+function demoDataDir(): string {
+  const dir = path.join(os.tmpdir(), "airoom-demo-data");
+  if (!existsSync(dir) && existsSync(BUNDLED_DATA_DIR)) cpSync(BUNDLED_DATA_DIR, dir, { recursive: true });
+  return dir;
+}
+
+export const DATA_DIR = DEMO_MODE ? demoDataDir() : BUNDLED_DATA_DIR;
 
 const ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 

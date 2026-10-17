@@ -3,6 +3,8 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/inter-tight/index.css";
 import "@fontsource-variable/jetbrains-mono/index.css";
 import "./globals.css";
+import { DEMO_MODE } from "@/lib/constants/features";
+import DemoBanner from "@/views/widgets/common/DemoBanner";
 
 export const metadata: Metadata = {
   title: "AIROOM",
@@ -17,7 +19,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {children}
+        {DEMO_MODE && <DemoBanner />}
+      </body>
     </html>
   );
 }
