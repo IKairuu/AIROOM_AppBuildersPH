@@ -18,7 +18,7 @@ A private AI for the whole room, hosted on one computer, with no internet needed
 [![Gemma 3](https://img.shields.io/badge/Gemma%203-4B%20%2B%201B-4285F4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/gemma)
 [![Offline](https://img.shields.io/badge/Internet-Not%20required-62E3A6?style=flat-square)](#what-runs-locally-vs-what-needs-the-internet)
 [![Hackathon](https://img.shields.io/badge/AppBuildersPH-Hackathon%202026-5B47FF?style=flat-square)](https://appbuildersph.com/hackathon)
-[![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-red?style=flat-square)](LICENSE)
 
 *One computer runs the AI. Every phone in the room joins its Wi-Fi and asks in the browser. No app, no account, no mobile data.*
 
@@ -355,7 +355,7 @@ Full list in [DISCLOSURE.md](DISCLOSURE.md).
 
 ## License
 
-Released under the [MIT License](LICENSE).
+Copyright (c) 2026 Team LUXUS. All rights reserved. The code is public for viewing and evaluation only; see [LICENSE](LICENSE).
 
 <div align="center">
 
